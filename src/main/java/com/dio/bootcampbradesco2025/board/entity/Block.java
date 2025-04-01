@@ -1,4 +1,4 @@
-package com.dio.bootcampbradesco2025.board.entities;
+package com.dio.bootcampbradesco2025.board.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,8 +1,11 @@
-package com.dio.bootcampbradesco2025.board.entities;
+package com.dio.bootcampbradesco2025.board.entity;
 
+import com.dio.bootcampbradesco2025.board.enums.BoardColumnTypeEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,8 +35,9 @@ public class BoardColumn {
     @Column(name = "\"order\"", nullable = false)
     private int order;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 7)
-    private String kind;
+    private BoardColumnTypeEnum type;
 
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
