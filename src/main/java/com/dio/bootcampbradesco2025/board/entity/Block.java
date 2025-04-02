@@ -25,13 +25,13 @@ public class Block {
     @Column(name = "blocked_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime blockedAt;
 
-    @Column(name = "block_reason", nullable = false, length = 255)
+    @Column(name = "block_reason", nullable = false)
     private String blockReason;
 
     @Column(name = "unblocked_at")
     private LocalDateTime unblockedAt;
 
-    @Column(name = "unblock_reason", length = 255)
+    @Column(name = "unblock_reason")
     private String unblockReason;
 
     @ManyToOne
