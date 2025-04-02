@@ -47,4 +47,9 @@ public class BoardColumn {
     @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Card> cards;
 
+    public BoardColumn(String name, BoardColumnTypeEnum type, int order) {
+        this.name = name;
+        this.type = type;
+        this.order = order;
+    }
 }
