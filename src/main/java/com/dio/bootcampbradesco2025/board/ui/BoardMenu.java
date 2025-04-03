@@ -1,23 +1,34 @@
 package com.dio.bootcampbradesco2025.board.ui;
 
 import com.dio.bootcampbradesco2025.board.entity.Board;
+import com.dio.bootcampbradesco2025.board.entity.BoardColumn;
 import com.dio.bootcampbradesco2025.board.service.BoardService;
 import com.dio.bootcampbradesco2025.board.service.CardService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Scanner;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class BoardMenu {
 
     private final Scanner scanner = new Scanner(System.in).useDelimiter("\n");
     private final BoardService boardService;
     private final CardService cardService;
+    private final TransactionTemplate transactionTemplate;
+
     private Board board;
+
+    public BoardMenu(BoardService boardService, CardService cardService, PlatformTransactionManager transactionManager) {
+        this.boardService = boardService;
+        this.cardService = cardService;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    }
 
     public void execute(Board entity) {
         try {
@@ -43,7 +54,7 @@ public class BoardMenu {
                     case 4 -> unblockCard();
                     case 5 -> cancelCard();
                     case 6 -> showBoard();
-                    case 7 -> showColumn();
+                    case 7 -> showCardsInColumn();
                     case 8 -> showCard();
                     case 9 -> System.out.println("Voltando para o menu anterior");
                     case 10 -> System.exit(0);
@@ -62,7 +73,6 @@ public class BoardMenu {
 
         var c = cardService.getCardDetails(selectedCardId);
 
-
         System.out.printf("Card %s - %s.\n", c.id(), c.title());
         System.out.printf("Descrição: %s\n", c.description());
         System.out.println(c.blocked() ?
@@ -70,10 +80,33 @@ public class BoardMenu {
                 "Não está bloqueado");
         System.out.printf("Já foi bloqueado %s vezes\n", c.blocksAmount());
         System.out.printf("Está no momento na coluna %s - %s\n", c.columnId(), c.columnName());
+        System.out.println();
+        System.out.println();
 
     }
 
-    private void showColumn() {
+    private void showCardsInColumn() {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                var currentBoard = boardService.findById(board.getId());
+                var columns = currentBoard.getColumns();
+                var columnsIds = columns.stream().map(BoardColumn::getId).toList();
+                var selectedColumnId = -1L;
+                while (!columnsIds.contains(selectedColumnId)){
+                    System.out.printf("Escolha uma coluna do board %s pelo id\n", currentBoard.getName());
+                    columns.forEach(c -> System.out.printf("%s - %s [%s]\n", c.getId(), c.getName(), c.getType()));
+                    selectedColumnId = scanner.nextLong();
+                }
+                long finalSelectedColumnId = selectedColumnId;
+                var column = columns.stream().filter(c -> finalSelectedColumnId == c.getId()).findFirst().orElseThrow(() -> new IllegalArgumentException("Coluna não encontrada"));
+                System.out.printf("Coluna %s tipo %s\n", column.getName(), column.getType());
+                column.getCards().forEach(ca -> System.out.printf("Card %s - %s\nDescrição: %s",
+                        ca.getId(), ca.getTitle(), ca.getDescription()));
+                System.out.println();
+                System.out.println();
+            }
+        });
     }
 
     private void showBoard() {
@@ -83,6 +116,8 @@ public class BoardMenu {
                 System.out.printf("Coluna [%s] tipo: [%s] tem %s cards\n",
                         c.name(), c.type(), c.cardsAmount())
         );
+        System.out.println();
+        System.out.println();
     }
 
     private void cancelCard() {
