@@ -38,4 +38,8 @@ public class Block {
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
+    public boolean isBlocked() {
+        return blockedAt != null;
+    }
+
 }

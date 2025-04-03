@@ -14,6 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Data
@@ -38,5 +41,23 @@ public class Card {
     @ToString.Exclude
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Block> blocks;
+
+    public boolean isBlocked() {
+        return Optional.ofNullable(getBlocksOrderedByDate().getLast())
+                .map(Block::isBlocked)
+                .orElse(false);
+    }
+
+    public List<Block> getBlocksOrderedByDate() {
+        return Optional.ofNullable(blocks)
+                .map(b -> b.stream()
+                        .sorted((o1, o2) -> {
+                            var eventDate1 = o1.getBlockedAt() != null ? o1.getBlockedAt() : o1.getUnblockedAt();
+                            var eventDate2 = o2.getBlockedAt() != null ? o2.getBlockedAt() : o2.getUnblockedAt();
+                            return eventDate1.compareTo(eventDate2);
+                        })
+                        .toList())
+                .orElse(Collections.emptyList());
+    }
 
 }

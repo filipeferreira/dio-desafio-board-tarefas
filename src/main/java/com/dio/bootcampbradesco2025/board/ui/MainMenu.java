@@ -23,7 +23,7 @@ public class MainMenu {
     private final BoardService boardService;
     private final BoardMenu boardMenu;
 
-    public void execute() throws Exception {
+    public void execute() {
         System.out.println("Bem vindo ao gerenciador de boards, escolha a opção desejada");
         var option = -1;
         while (true){
@@ -43,11 +43,11 @@ public class MainMenu {
     }
 
     private void deleteBoard() {
-        System.out.println("Informe o id do board que será excluido");
+        System.out.println("Informe o id do board que será excluído");
         var id = scanner.nextLong();
         try {
             boardService.delete(id);
-            System.out.println("Board excluido com sucesso");
+            System.out.println("Board excluído com sucesso");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -57,7 +57,7 @@ public class MainMenu {
         System.out.println("Informe o id do board que deseja selecionar");
         var id = scanner.nextLong();
         boardService.findById(id).ifPresentOrElse(
-                b -> new BoardMenu().execute(b),
+                boardMenu::execute,
                 () -> System.out.printf("Não foi encontrado um board com id %s\n", id)
         );
     }
