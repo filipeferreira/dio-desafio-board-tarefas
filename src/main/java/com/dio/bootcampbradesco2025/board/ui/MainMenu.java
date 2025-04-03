@@ -56,10 +56,9 @@ public class MainMenu {
     private void selectBoard() {
         System.out.println("Informe o id do board que deseja selecionar");
         var id = scanner.nextLong();
-        boardService.findById(id).ifPresentOrElse(
-                boardMenu::execute,
-                () -> System.out.printf("Não foi encontrado um board com id %s\n", id)
-        );
+        var board = boardService.findById(id);
+        System.out.println("Iniciando board: " + board.getName());
+        boardMenu.execute(board);
     }
 
     private void createBoard() {

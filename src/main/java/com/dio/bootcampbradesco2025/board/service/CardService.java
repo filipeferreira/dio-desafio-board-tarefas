@@ -1,17 +1,20 @@
 package com.dio.bootcampbradesco2025.board.service;
 
 import com.dio.bootcampbradesco2025.board.dto.CardDetailsDTO;
+import com.dio.bootcampbradesco2025.board.entity.Board;
 import com.dio.bootcampbradesco2025.board.entity.Card;
 import com.dio.bootcampbradesco2025.board.enums.BoardColumnTypeEnum;
 import com.dio.bootcampbradesco2025.board.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class CardService {
 
     private final CardRepository cardRepository;
+    private final BoardService boardService;
 
     public CardDetailsDTO getCardDetails(long id) {
         return null;
@@ -48,5 +51,15 @@ public class CardService {
         if (card.isBlocked()) {
             throw new IllegalArgumentException("O card está bloqueado. É necessário desbloqueá-lo para movê-lo para outra coluna.");
         }
+    }
+
+    @Transactional
+    public void create(long boardId, String title, String description) {
+        var board = boardService.findById(boardId);
+        Card card = new Card();
+        card.setTitle(title);
+        card.setDescription(description);
+        card.setBoardColumn(board.getInitialColumn());
+        cardRepository.save(card);
     }
 }

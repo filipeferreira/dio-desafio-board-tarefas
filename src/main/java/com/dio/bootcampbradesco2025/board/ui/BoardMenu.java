@@ -77,7 +77,7 @@ public class BoardMenu {
     }
 
     private void showBoard() {
-        var boardDetails = boardService.getBoardDetails(board);
+        var boardDetails = boardService.getBoardDetails(board.getId());
         System.out.printf("Board [%s,%s]\n", boardDetails.id(), boardDetails.name());
         boardDetails.columns().forEach(c ->
                 System.out.printf("Coluna [%s] tipo: [%s] tem %s cards\n",
@@ -102,6 +102,10 @@ public class BoardMenu {
     }
 
     private void createCard() {
-
+        System.out.println("Informe o título do card");
+        var title = scanner.next();
+        System.out.println("Informe a descrição do card");
+        var description = scanner.next();
+        cardService.create(board.getId(), title, description);
     }
 }

@@ -1,5 +1,6 @@
 package com.dio.bootcampbradesco2025.board.entity;
 
+import com.dio.bootcampbradesco2025.board.enums.BoardColumnTypeEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,4 +31,10 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BoardColumn> columns;
 
+    public BoardColumn getInitialColumn() {
+        return columns.stream()
+                .filter(column -> column.getType().equals(BoardColumnTypeEnum.INITIAL))
+                .findFirst()
+                .orElse(null);
+    }
 }

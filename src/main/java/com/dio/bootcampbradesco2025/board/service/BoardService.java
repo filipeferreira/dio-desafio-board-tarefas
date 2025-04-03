@@ -28,18 +28,19 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
-    public Optional<Board> findById(long id) {
-        return boardRepository.findById(id);
+    public Board findById(long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Board não encontrado para o id: " + id));
     }
 
     @Transactional
-    public BoardDetailsDTO getBoardDetails(Board board) {
-        return boardRepository.findById(board.getId())
-                .map(b ->  {
-                    var columns = b.getColumns().stream()
-                            .map(c -> new BoardColumnDTO(c.getId(), c.getName(), c.getType(), c.getCards().size()))
+    public BoardDetailsDTO getBoardDetails(long boardId) {
+        var board = this.findById(boardId);
+        var columns = board
+                .getColumns()
+                .stream()
+                .map(c -> new BoardColumnDTO(c.getId(), c.getName(), c.getType(), c.getCards().size()))
                             .collect(Collectors.toSet());
-                    return new BoardDetailsDTO(b.getId(), b.getName(), columns);
-                }).orElseThrow(() -> new IllegalArgumentException("Board não encontrado para o id: " + board.getId()));
+        return new BoardDetailsDTO(board.getId(), board.getName(), columns);
     }
 }

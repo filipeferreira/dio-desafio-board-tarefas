@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -34,11 +35,12 @@ public class Card {
     @Column(nullable = false)
     private String description;
 
-
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "board_column_id", nullable = false)
     private BoardColumn boardColumn;
 
+    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Block> blocks;
