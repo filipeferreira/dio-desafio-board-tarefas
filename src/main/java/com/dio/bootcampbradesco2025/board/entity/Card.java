@@ -34,6 +34,7 @@ public class Card {
     @Column(nullable = false)
     private String description;
 
+
     @ManyToOne
     @JoinColumn(name = "board_column_id", nullable = false)
     private BoardColumn boardColumn;
@@ -43,9 +44,13 @@ public class Card {
     private Set<Block> blocks;
 
     public boolean isBlocked() {
-        return Optional.ofNullable(getBlocksOrderedByDate().getLast())
-                .map(Block::isBlocked)
-                .orElse(false);
+        var blocksOrderedByDate = getBlocksOrderedByDate();
+        if (blocksOrderedByDate.isEmpty()) {
+            return false;
+        } else {
+            var lastBlock = blocksOrderedByDate.get(blocksOrderedByDate.size() - 1);
+            return lastBlock.isBlocked();
+        }
     }
 
     public List<Block> getBlocksOrderedByDate() {

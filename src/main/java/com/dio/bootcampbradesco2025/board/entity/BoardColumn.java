@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -39,17 +40,20 @@ public class BoardColumn {
     @Column(nullable = false, length = 7)
     private BoardColumnTypeEnum type;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Card> cards;
 
-    public BoardColumn(String name, BoardColumnTypeEnum type, int order) {
+    public BoardColumn(String name, BoardColumnTypeEnum type, int order, Board board) {
         this.name = name;
         this.type = type;
         this.order = order;
+        this.board = board;
     }
 }

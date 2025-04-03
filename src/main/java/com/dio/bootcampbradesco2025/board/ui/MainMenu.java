@@ -63,9 +63,9 @@ public class MainMenu {
     }
 
     private void createBoard() {
-        var entity = new Board();
+        var board = new Board();
         System.out.println("Informe o nome do seu board");
-        entity.setName(scanner.next());
+        board.setName(scanner.next());
 
         System.out.println("Seu board terá colunas além das 3 padrões? Se sim informe quantas, senão digite '0'");
         var additionalColumns = scanner.nextInt();
@@ -74,28 +74,28 @@ public class MainMenu {
 
         System.out.println("Informe o nome da coluna inicial do board");
         var initialColumnName = scanner.next();
-        var initialColumn = new BoardColumn(initialColumnName, INITIAL, 0);
+        var initialColumn = new BoardColumn(initialColumnName, INITIAL, 0, board);
         columns.add(initialColumn);
 
         for (int i = 0; i < additionalColumns; i++) {
             System.out.println("Informe o nome da coluna de tarefa pendente do board");
             var pendingColumnName = scanner.next();
-            var pendingColumn = new BoardColumn(pendingColumnName, PENDING, i + 1);
+            var pendingColumn = new BoardColumn(pendingColumnName, PENDING, i + 1, board);
             columns.add(pendingColumn);
         }
 
         System.out.println("Informe o nome da coluna final");
         var finalColumnName = scanner.next();
-        var finalColumn = new BoardColumn(finalColumnName, FINAL, additionalColumns + 1);
+        var finalColumn = new BoardColumn(finalColumnName, FINAL, additionalColumns + 1, board);
         columns.add(finalColumn);
 
         System.out.println("Informe o nome da coluna de cancelamento do baord");
         var cancelColumnName = scanner.next();
-        var cancelColumn = new BoardColumn(cancelColumnName, CANCEL, additionalColumns + 2);
+        var cancelColumn = new BoardColumn(cancelColumnName, CANCEL, additionalColumns + 2, board);
         columns.add(cancelColumn);
 
-        entity.setColumns(columns);
-        boardService.create(entity);
+        board.setColumns(columns);
+        boardService.create(board);
 
     }
 }
