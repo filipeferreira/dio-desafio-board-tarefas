@@ -23,10 +23,10 @@ public class Block {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "blocked_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "blocked_at")
     private LocalDateTime blockedAt;
 
-    @Column(name = "block_reason", nullable = false)
+    @Column(name = "block_reason")
     private String blockReason;
 
     @Column(name = "unblocked_at")

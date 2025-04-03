@@ -56,15 +56,17 @@ public class Card {
     }
 
     public List<Block> getBlocksOrderedByDate() {
+        return getBlocks().stream()
+                .sorted((o1, o2) -> {
+                    var eventDate1 = o1.getBlockedAt() != null ? o1.getBlockedAt() : o1.getUnblockedAt();
+                    var eventDate2 = o2.getBlockedAt() != null ? o2.getBlockedAt() : o2.getUnblockedAt();
+                    return eventDate1.compareTo(eventDate2);
+                }).toList();
+    }
+
+    public Set<Block> getBlocks() {
         return Optional.ofNullable(blocks)
-                .map(b -> b.stream()
-                        .sorted((o1, o2) -> {
-                            var eventDate1 = o1.getBlockedAt() != null ? o1.getBlockedAt() : o1.getUnblockedAt();
-                            var eventDate2 = o2.getBlockedAt() != null ? o2.getBlockedAt() : o2.getUnblockedAt();
-                            return eventDate1.compareTo(eventDate2);
-                        })
-                        .toList())
-                .orElse(Collections.emptyList());
+                .orElse(Collections.emptySet());
     }
 
 }

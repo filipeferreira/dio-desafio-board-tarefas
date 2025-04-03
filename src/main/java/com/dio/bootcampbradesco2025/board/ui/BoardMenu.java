@@ -88,17 +88,45 @@ public class BoardMenu {
     private void cancelCard() {
         System.out.println("Informe o id do card que deseja mover para a coluna de cancelamento");
         var cardId = scanner.nextLong();
-        cardService.cancelCard(cardId);
+        try {
+            cardService.cancelCard(cardId);
+        } catch (IllegalStateException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void unblockCard() {
+        System.out.println("Informe o id do card que será desbloqueado");
+        var cardId = scanner.nextLong();
+        System.out.println("Informe o motivo do desbloqueio do card");
+        var reason = scanner.next();
+        try {
+            cardService.createBlock(cardId, reason, false);
+        } catch (IllegalStateException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void blockCard() {
+        System.out.println("Informe o id do card que será bloqueado");
+        var cardId = scanner.nextLong();
+        System.out.println("Informe o motivo do bloqueio do card");
+        var reason = scanner.next();
+        try {
+            cardService.createBlock(cardId, reason, true);
+        } catch (IllegalStateException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void moveCardToNextColumn() {
-
+        System.out.println("Informe o id do card que deseja mover para a próxima coluna");
+        var cardId = scanner.nextLong();
+        try {
+            cardService.moveCardToNextColumn(cardId);
+        } catch (IllegalStateException ex){
+            log.error(ex.getMessage());
+        }
     }
 
     private void createCard() {
